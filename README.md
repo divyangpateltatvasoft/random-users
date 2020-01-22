@@ -6,4 +6,5 @@ Follow the below steps to start this application.
 2) Install packages using npm command (npm install)
 3) After the installation of all packages, you can start the application using npm command (npm start)
 
+Landing page (Random Users)
 ![page](/documents/landing-page.PNG)
