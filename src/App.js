@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import Users from './users/users';
+import Users from './Components/Users/Users';
 import { AppBar } from '@material-ui/core';
 import { Typography } from '@material-ui/core';
 import { Toolbar } from '@material-ui/core';
@@ -16,7 +16,7 @@ function App() {
       </AppBar>
 
       {/* Random Users List */}
-      <Users></Users>
+      <Users />
     </div>
   );
 }

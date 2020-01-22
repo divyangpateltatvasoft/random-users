@@ -12,6 +12,16 @@ import { Box } from '@material-ui/core';
 import { CircularProgress } from '@material-ui/core';
 import { Select } from '@material-ui/core';
 import { MenuItem } from '@material-ui/core';
+import { getRandomUsersAPI } from '../../API/UserAPI';
+import { withStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
+
+// Material-UI style
+const styles = theme => ({
+    container: {
+        maxHeight: 750,
+    },
+});
 
 class Users extends React.Component {
     state = {
@@ -25,37 +35,39 @@ class Users extends React.Component {
         this.getRandomUsersData();
     }
 
+    // Get random users data.
     getRandomUsersData() {
-        fetch("https://randomuser.me/api/?results=" + this.state.showingRecords)
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    this.setState({
-                        users: result.results,
-                        isLoading: false
-                    });
-                },
-                (error) => {
-                    this.setState({
-                        isLoading: false,
-                        error
-                    });
-                }
-            )
+        getRandomUsersAPI(this.state.showingRecords)
+            .then(data => {
+                this.setState({
+                    users: data,
+                    isLoading: false
+                });
+            }, error => {
+                this.setState({
+                    error: error,
+                    isLoading: false
+                });
+            });
     }
 
+    // Refresh random users data on Refresh button click.
     refreshData = () => {
         this.setState({ isLoading: true }, () => this.getRandomUsersData());
     }
 
+    // This function is used for show total numbers of random users. 
     onChangeRecords = (event) => {
         this.setState({ showingRecords: event.target.value, isLoading: true }, () => this.getRandomUsersData());
     }
 
     render() {
+        const { classes } = this.props;
+
         if (this.state.error) {
             return (
                 <div>
+                    {/* Display error message if any error occured during the fetch api of random users. */}
                     Error: {this.state.error.message}
                 </div>
             );
@@ -74,9 +86,10 @@ class Users extends React.Component {
                         <Button variant="contained" className="m-r-20" color="primary" onClick={this.refreshData}>Refresh Data</Button>
                     </Box>
                     <Box m={2}>
+                        {/* If loading is in progress then show progress bar otherwise load table data. */}
                         {this.state.isLoading ? <CircularProgress className="loader" color="secondary" /> :
-                            <TableContainer component={Paper}>
-                                <Table aria-label="simple table">
+                            <TableContainer component={Paper} className={classes.container}>
+                                <Table stickyHeader aria-label="sticky table">
                                     <TableHead>
                                         <TableRow>
                                             <TableCell><b>Profile Picture</b></TableCell>
@@ -116,4 +129,8 @@ class Users extends React.Component {
     }
 }
 
-export default Users;
+Users.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(Users);
